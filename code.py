@@ -1,0 +1,72 @@
+
+import json
+
+from pickle import TRUE
+import telnetlib
+import time
+from turtle import done
+data= None
+import smtplib  
+runcode = True
+from datetime import datetime
+
+
+
+conn =smtplib.SMTP('smtp-mail.outlook.com',587)  
+
+type(conn)  
+
+conn.ehlo()  
+
+conn.starttls()  
+
+conn.login('your email','email password')
+
+
+
+
+while runcode==True: 
+
+    with open('your json file to read ip and ports from') as file:
+        data=json.load(file)
+        file.close()
+
+    for ip, ports in data.items():
+        
+     for port in ports:
+        try:
+            
+                connectt=telnetlib.Telnet(ip,port)
+                response='Success'
+                
+        except:
+            timeNow=datetime.now().strftime("%H:%M:%S")
+            msgg="""From:  Server is down <your email to send notifaction in>
+
+
+please check {} port number {} to reconect, time of error at {}
+
+""".format(ip,port,timeNow)   
+        
+            conn.sendmail('your email want to send notify to',listEmail,msg=msgg)  
+
+
+            response='Failed'
+            
+
+            print(ip,port,response,timeNow)
+        
+        print(ip,port,response)
+        listEmail=['email to sned notify to ','email to sned notify to@outlook.com']
+        
+
+
+
+
+        
+
+
+    time.sleep(9000)
+conn.quit()
+
+ 
